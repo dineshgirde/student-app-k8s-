@@ -23,8 +23,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_USER = "YOUR_DOCKERHUB_USERNAME"
-        REPO_NAME      = "YOUR_IMAGE_NAME"
+        DOCKERHUB_USER = "dineshgirde97"
+        REPO_NAME      = "dineshgirde97/project:latest"
     }
 
     stages {
@@ -32,7 +32,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/mukundDeo9325/student-app-k8s.git'
+                    url: 'https://github.com/dineshgirde/student-app-k8s-.git'
             }
         }
 
