@@ -193,3 +193,57 @@ pipeline {
 
 
 ```
+
+```groovy
+pipeline {
+    agent any
+
+    environment {
+        AWS_DEFAULT_REGION = 'ap-south-1'
+    }
+
+    stages {
+
+        stage('Code Pull') {
+            steps {
+                git branch: 'main',
+                url: 'https://github.com/mukundDeo9325/student-app-k8s.git'
+            }
+        }
+
+        stage('Deploy To EKS') {
+            steps {
+
+                withCredentials([
+                    aws(
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        credentialsId: 'aws-cred',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    )
+                ]) {
+
+                    sh '''
+                    aws eks update-kubeconfig \
+                    --region ap-south-1 \
+                    --name EKS_CLOUD
+
+                    kubectl get nodes
+
+                    kubectl apply -f backend.yaml ./backend
+
+                    kubectl apply -f frontend.yaml ./frontend
+
+                    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+
+                    kubectl apply -f ingress.yaml
+
+                    kubectl get pods
+
+                    kubectl get svc
+                    '''
+                }
+            }
+        }
+    }
+}
+```
